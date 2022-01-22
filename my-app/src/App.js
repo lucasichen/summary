@@ -1,6 +1,7 @@
 
 import './App.css';
 import React, { Component } from 'react';
+
 require('dotenv').config();
 const fetch = require('node-fetch');
 const upload = 'https://api.assemblyai.com/v2/transcript';
@@ -24,7 +25,7 @@ class App extends Component {
     try {
       const response = await fetch(upload,{
         headers:{
-            "authorization": 'e1436fdf9c1346e18b5104ac96980290',
+            "authorization": process.env.ASSEMBLYAI_API_KEY,
             "content-type": "application/json",
         },
         body: JSON.stringify(data),
@@ -46,7 +47,7 @@ class App extends Component {
       // console.log(theURL);
       const Res = await fetch(theURL,{
         headers: {
-          "authorization": 'e1436fdf9c1346e18b5104ac96980290',
+          "authorization": process.env.ASSEMBLYAI_API_KEY,
           "content-type": "application/json",
         }, 
         method: "GET"
@@ -64,27 +65,28 @@ class App extends Component {
   }
   // Where everything is runned
   async componentDidMount() {
+    console.log(process.env)
     let json = await this.uploadArtifact();
     console.log("Await done: ",json.id);
-    const interval = setInterval(async() => {
-      try {
-        const jsonArt = await this.getArtifact(json)
-        console.log(jsonArt)
-        if (jsonArt.status === 'completed') {
-          let text = await this.getArtifact(json);
-          console.log(text.text); //To get text
-          clearInterval(interval);
-        }
-        if (jsonArt.status === 'trained') {
-          clearInterval(interval);
-        }
-        if (jsonArt.status === 'error') {
-          clearInterval(interval);
-        }
-      } catch (e) {
-        clearInterval(interval);
-      }
-    }, 3000)
+    // const interval = setInterval(async() => {
+    //   try {
+    //     const jsonArt = await this.getArtifact(json)
+    //     console.log(jsonArt)
+    //     if (jsonArt.status === 'completed') {
+    //       let text = await this.getArtifact(json);
+    //       console.log(text.text); //To get text
+    //       clearInterval(interval);
+    //     }
+    //     if (jsonArt.status === 'trained') {
+    //       clearInterval(interval);
+    //     }
+    //     if (jsonArt.status === 'error') {
+    //       clearInterval(interval);
+    //     }
+    //   } catch (e) {
+    //     clearInterval(interval);
+    //   }
+    // }, 3000)
     
   }
   render() {
