@@ -5,6 +5,7 @@ require('dotenv').config();
 const fetch = require('node-fetch');
 const upload = 'https://api.assemblyai.com/v2/transcript';
 const transURL = 'https://api.assemblyai.com/v2/transcript/';
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -42,7 +43,7 @@ class App extends Component {
   async getArtifact(json) {
     try {
       let theURL = transURL+json.id;
-      console.log(theURL);
+      // console.log(theURL);
       const Res = await fetch(theURL,{
         headers: {
           "authorization": 'e1436fdf9c1346e18b5104ac96980290',
@@ -52,7 +53,8 @@ class App extends Component {
       });
       const transcript = await Res.json();
       this.setState({ item: transcript });
-      console.log(transcript);
+      // console.log(transcript);
+      return transcript;
       // while(transcript.status === 'queued') {
       //   this.getArtifact(json);
       // }
@@ -64,47 +66,37 @@ class App extends Component {
       this.setState({ isLoading: false });
     }
   }
-  // Poll (upload, json) {
-  //   return new Promise((resolve, reject) => {
-  //     const request = new Request({
-  //       method: 'GET',
-  //       url: `${upload}/${json.id}`
-  //     })
-
-  //     const interval = setInterval(async () => {
-  //       try {
-  //         const apiResponse = await request.send()
-  //         const response = new Response(apiResponse)
-  //         const json = response.get()
-  //         if (json.status === 'completed') {
-  //           clearInterval(interval)
-  //           resolve(response)
-  //         }
-  //         if (json.status === 'trained') {
-  //           clearInterval(interval)
-  //           resolve(response)
-  //         }
-  //         if (json.status === 'error') {
-  //           clearInterval(interval)
-  //           reject(json.error)
-  //         }
-  //       } catch (e) {
-  //         clearInterval(interval)
-  //         reject(e)
-  //       }
-  //     }, 3000)
-  //   })
-  // }
+  
   async componentDidMount() {
     let json = await this.uploadArtifact();
     console.log("Await done: ",json.id);
-    this.getArtifact(json);
-    // this.Poll(upload,json);
-    // console.log(this.getArtifact(json).status)
-    // while (this.getArtifact(json).status === 'queued') {
-    //   this.getArtifact(json);
-    // };
-
+    const interval = setInterval(async() => {
+      try {
+        // const apiResponse = await request.send()
+        // const response = new Response(apiResponse)
+        const jsonArt = await this.getArtifact(json)
+        console.log(jsonArt)
+        // console.log(this.getArtifact(json).status);
+        if (jsonArt.status === 'completed') {
+          let text = await this.getArtifact(json);
+          console.log(text.text);
+          clearInterval(interval);
+          // resolve(response)
+        }
+        if (jsonArt.status === 'trained') {
+          clearInterval(interval);
+          // resolve(response)
+        }
+        if (jsonArt.status === 'error') {
+          clearInterval(interval);
+          // reject(json.error)
+        }
+      } catch (e) {
+        clearInterval(interval);
+        // reject(e)
+      }
+    }, 3000)
+    
   }
   render() {
     const { data, isLoaded } = this.state;
