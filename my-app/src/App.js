@@ -53,12 +53,8 @@ class App extends Component {
       });
       const transcript = await Res.json();
       this.setState({ item: transcript });
-      // console.log(transcript);
       return transcript;
-      // while(transcript.status === 'queued') {
-      //   this.getArtifact(json);
-      // }
-      // return transcript;
+
     } 
     catch (error) {
     console.log(error);
@@ -66,34 +62,27 @@ class App extends Component {
       this.setState({ isLoading: false });
     }
   }
-  
+  // Where everything is runned
   async componentDidMount() {
     let json = await this.uploadArtifact();
     console.log("Await done: ",json.id);
     const interval = setInterval(async() => {
       try {
-        // const apiResponse = await request.send()
-        // const response = new Response(apiResponse)
         const jsonArt = await this.getArtifact(json)
         console.log(jsonArt)
-        // console.log(this.getArtifact(json).status);
         if (jsonArt.status === 'completed') {
           let text = await this.getArtifact(json);
-          console.log(text.text);
+          console.log(text.text); //To get text
           clearInterval(interval);
-          // resolve(response)
         }
         if (jsonArt.status === 'trained') {
           clearInterval(interval);
-          // resolve(response)
         }
         if (jsonArt.status === 'error') {
           clearInterval(interval);
-          // reject(json.error)
         }
       } catch (e) {
         clearInterval(interval);
-        // reject(e)
       }
     }, 3000)
     
