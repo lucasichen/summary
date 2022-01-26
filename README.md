@@ -18,8 +18,8 @@ The plan was to allow you can upload an mp4 or mp3 file and watch it along with 
 * [Assembly API](https://docs.assemblyai.com/?utm_source=hackathon&utm_medium=notion&utm_campaign=oct8_10) - Used to get transcriptions 
 ### Authors
 * [Lucas Chen](https://www.github/lucasichen) <br>
-* [Douglas Chen]() <br>
-* [Aditya Bhadauriya]() <br>
-* [Fady Morcos]() <br>
+* [Douglas Chen](https://github.com/douglasichen) <br>
+* [Aditya Bhadauriya](https://github.com/9aditya9) <br>
+* [Fady Morcos](https://github.com/fadymorcos21) <br>
 
 
